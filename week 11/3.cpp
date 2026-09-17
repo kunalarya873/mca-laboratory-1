@@ -31,8 +31,27 @@ int sumAlternative(int num){
 	return res;
 }
 
+int altdigits(int num, bool even) {
+    int res = 0;
+    int position = 1;
+
+    while (num > 0) {
+        int digit = num % 10;
+
+        if ((position % 2 == 0) == even) {
+            res += digit;
+        }
+
+        num /= 10;
+        position++;
+    }
+
+    return res;
+}
+
+
 int main(){
-	cout << sumNumber(12345000) << endl;
+	cout << altdigits(12345, true) << endl;
 	
 	return 0;
 }
