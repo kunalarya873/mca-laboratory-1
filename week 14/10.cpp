@@ -70,21 +70,18 @@ class BST {
             root->right = deleteNode(root->right, val);
         }
         else {
-            // Case 1: No left child
             if (root->left == nullptr) {
                 Node* temp = root->right;
                 delete root;
                 return temp;
             }
 
-            // Case 2: No right child
             if (root->right == nullptr) {
                 Node* temp = root->left;
                 delete root;
                 return temp;
             }
 
-            // Case 3: Two children
             Node* temp = findMin(root->right);
             root->val = temp->val;
             root->right = deleteNode(root->right, temp->val);
