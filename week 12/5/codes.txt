@@ -1,0 +1,214 @@
+CREATE TABLE UNIVERSITY (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    location VARCHAR(100),
+    year INT
+);
+
+CREATE TABLE DEPARTMENT (
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    hod VARCHAR(100),
+    university_id INT,
+    FOREIGN KEY (university_id)
+        REFERENCES UNIVERSITY(id)
+);
+
+CREATE TABLE PROGRAM(
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    duration VARCHAR(100),
+    university_id INT,
+    FOREIGN KEY (university_id)
+        REFERENCES UNIVERSITY(id)
+);
+
+CREATE TABLE SYLLABUS(
+    id INT PRIMARY KEY,
+    topic VARCHAR(100),
+    university_id INT,
+    FOREIGN KEY (university_id )
+        REFERENCES UNIVERSITY(id)
+);
+
+CREATE TABLE COURSE(
+    id INT PRIMARY KEY,
+    topic VARCHAR(100),
+    program_id INT,
+    syllabus_id INT,
+    FOREIGN KEY (program_id )
+        REFERENCES PROGRAM(id),
+    FOREIGN KEY(syllabus_id)
+        REFERENCES SYLLABUS(id)
+);
+
+CREATE TABLE FACULTY(
+    id INT PRIMARY KEY,
+    name VARCHAR(100),
+    specialisation VARCHAR(100),
+    university_id INT,
+    FOREIGN KEY (university_id)
+        REFERENCES UNIVERSITY(id)
+);
+
+CREATE INDEX idx_department_university
+ON DEPARTMENT(university_id);
+
+CREATE INDEX idx_program_university
+ON PROGRAM(university_id);
+
+CREATE INDEX idx_syllabus_university
+ON SYLLABUS(university_id);
+
+CREATE INDEX idx_course_program
+ON COURSE(program_id);
+
+CREATE INDEX idx_course_syllabus
+ON COURSE(syllabus_id);
+
+CREATE INDEX idx_faculty_university
+ON FACULTY(university_id);
+
+INSERT INTO UNIVERSITY (id, name, location, year)
+VALUES (1, 'AMU', 'Aligarh', 2026);
+
+INSERT INTO UNIVERSITY (id, name, location, year)
+VALUES (2, 'JNI', 'Delhi', 2026);
+
+INSERT INTO UNIVERSITY (id, name, location, year)
+VALUES (3, 'JNU', 'Kashmir', 2026);
+
+INSERT INTO UNIVERSITY (id, name, location, year)
+VALUES (4, 'BHU', 'Banaras', 2026);
+
+INSERT INTO UNIVERSITY (id, name, location, year)
+VALUES (5, 'NIT', 'Jaipur', 2026);
+
+
+
+
+INSERT INTO FACULTY(id, name, university_id, specialisation)
+VALUES (1, 'Faraz Masood', 1, 'Analysis');
+
+INSERT INTO FACULTY(id, name, university_id, specialisation)
+VALUES (2, 'Sehba Masood', 1, 'Logic');
+INSERT INTO FACULTY(id, name, university_id, specialisation)
+VALUES (3, 'Khan sahab', 2, 'Biology');
+INSERT INTO FACULTY(id, name, university_id, specialisation)
+VALUES (4, 'Ali Khan', 3, 'Chemistry');
+INSERT INTO FACULTY(id, name, university_id, specialisation)
+VALUES (5, 'Zain Khan', 4, 'CS');
+
+
+INSERT INTO SYLLABUS(id, topic, university_id)
+VALUES (1, 'Algorithm', 4);
+INSERT INTO SYLLABUS(id, topic, university_id)
+VALUES (2, 'Data structures', 1);
+INSERT INTO SYLLABUS(id, topic, university_id)
+VALUES (3, 'Operating system', 1);
+INSERT INTO SYLLABUS(id, topic, university_id)
+VALUES (4, 'Hacking', 3);
+INSERT INTO SYLLABUS(id, topic, university_id)
+VALUES (5, 'Cybresecurity', 2);
+
+INSERT INTO DEPARTMENT (id, name, hod, university_id)
+VALUES (1, 'Computer Science', 'Dr. Faraz Masood', 1);
+
+INSERT INTO DEPARTMENT (id, name, hod, university_id)
+VALUES (2, 'Mathematics', 'Dr. Sehba Masood', 1);
+
+INSERT INTO DEPARTMENT (id, name, hod, university_id)
+VALUES (3, 'Biology', 'Dr. Khan Sahab', 2);
+
+INSERT INTO DEPARTMENT (id, name, hod, university_id)
+VALUES (4, 'Chemistry', 'Dr. Ali Khan', 3);
+
+INSERT INTO DEPARTMENT (id, name, hod, university_id)
+VALUES (5, 'Computer Applications', 'Dr. Zain Khan', 4);
+
+
+INSERT INTO PROGRAM (id, name, duration, university_id)
+VALUES (1, 'B.Tech Computer Science', '4 years', 1);
+
+INSERT INTO PROGRAM (id, name, duration, university_id)
+VALUES (2, 'B.Sc Mathematics', '3 years', 1);
+
+INSERT INTO PROGRAM (id, name, duration, university_id)
+VALUES (3, 'B.Sc Biology', '3 years', 2);
+
+INSERT INTO PROGRAM (id, name, duration, university_id)
+VALUES (4, 'M.Sc Chemistry', '2 years', 3);
+
+INSERT INTO PROGRAM (id, name, duration, university_id)
+VALUES (5, 'MCA', '2 years', 4);
+
+INSERT INTO COURSE (id, topic, program_id, syllabus_id)
+VALUES (1, 'Algorithms', 1, 1);
+
+INSERT INTO COURSE (id, topic, program_id, syllabus_id)
+VALUES (2, 'Data Structures', 1, 2);
+
+INSERT INTO COURSE (id, topic, program_id, syllabus_id)
+VALUES (3, 'Operating Systems', 1, 3);
+
+INSERT INTO COURSE (id, topic, program_id, syllabus_id)
+VALUES (4, 'Cybersecurity', 4, 5);
+
+INSERT INTO COURSE (id, topic, program_id, syllabus_id)
+VALUES (5, 'Hacking and Security', 5, 4);
+
+SELECT *
+FROM UNIVERSITY
+WHERE location = 'Delhi';
+
+SELECT D.*
+FROM DEPARTMENT D
+JOIN UNIVERSITY U
+    ON D.university_id = U.id
+WHERE U.name = 'AMU';
+
+SELECT location
+FROM UNIVERSITY
+WHERE name = 'JNU';
+
+SELECT U.name
+FROM UNIVERSITY U
+JOIN PROGRAM P
+    ON U.id = P.university_id
+WHERE P.name = 'MCA';
+
+
+SELECT C.*
+FROM COURSE C
+JOIN PROGRAM P
+    ON C.program_id = P.id
+JOIN UNIVERSITY U
+    ON P.university_id = U.id
+WHERE P.name = 'MCA'
+  AND U.name = 'AMU';
+
+
+
+SELECT F.name AS faculty_name,
+       F.specialisation,
+       U.name AS university_name
+FROM FACULTY F
+JOIN UNIVERSITY U
+    ON F.university_id = U.id
+WHERE F.specialisation = 'CS';
+
+
+SELECT S.topic AS syllabus_topic,
+       U.name AS university_name
+FROM SYLLABUS S
+JOIN UNIVERSITY U
+    ON S.university_id = U.id
+WHERE S.topic = 'CS';
+
+SELECT S.topic AS syllabus_topic,
+       U.name AS university_name
+FROM SYLLABUS S
+JOIN UNIVERSITY U
+    ON S.university_id = U.id
+WHERE S.topic = 'Computer Architecture';
+
